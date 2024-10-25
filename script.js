@@ -1,5 +1,5 @@
 async function fetchImages() {
-    const url = 'https://docs.google.com/spreadsheets/d/2PACX-1vRExR9CptSxYcesgNeEvbFoCBEWe0u27Hi5sC0lSBaOlQj6jTxlxDcP0H0GqRQv5om1CXCvpOvyMRCU/pubhtml?timestamp=' + new Date().getTime();
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRExR9CptSxYcesgNeEvbFoCBEWe0u27Hi5sC0lSBaOlQj6jTxlxDcP0H0GqRQv5om1CXCvpOvyMRCU/pubhtml?timestamp=' + new Date().getTime();
 
     try {
         const response = await fetch(url);
