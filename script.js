@@ -1,5 +1,9 @@
 // This is a simple example dictionary. You can replace it with a larger one or connect to a real database
 const dictionary = new Set([
+    "Kent",
+    "Kents",
+    "'s"
+    "s"
     "a",
 "a.m.",
 "AC",
