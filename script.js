@@ -1,6 +1,5 @@
 // This is a simple example dictionary.
 const dictionary = new Set([
-    "'s",
     "a",
 "a.m.",
 "ac",
@@ -2029,7 +2028,36 @@ const dictionary = new Set([
 "zips"
 ]);
 
-function checkText() {
+// Helper function to check if a word is valid (including possessives and plurals)
+function checkWord(word) {
+    const cleanWord = word.toLowerCase().replace(/[^a-z']/g, '');
+    
+    // Direct dictionary check
+    if (dictionary.has(cleanWord)) {
+        return true;
+    }
+
+    // Remove trailing 's or s' if present
+    let baseWord = cleanWord;
+    
+    // Handle possessives first (word's or words')
+    if (baseWord.includes("'")) {
+        baseWord = baseWord
+            .replace(/'s$/, '')   // remove 's at end
+            .replace(/s'$/, 's')  // handle plural possessive
+            .replace(/'$/, '');   // handle any remaining apostrophes
+    }
+    // Then handle regular plurals
+    else if (baseWord.endsWith('s')) {
+        baseWord = baseWord.slice(0, -1);  // remove trailing s
+    }
+
+    // Check if base word is in dictionary
+    return dictionary.has(baseWord);
+}
+
+// Make checkText function global so it can be accessed by the onclick handler
+window.checkText = function() {
     const inputText = document.getElementById('inputText').value;
     const words = inputText.split(/\s+/).filter(word => word.length > 0);
     const resultDiv = document.getElementById('result');
@@ -2047,24 +2075,24 @@ function checkText() {
     const textDiv = document.createElement('div');
     textDiv.id = 'markedText';
 
-// Process words for the main text display and counting
-words.forEach(word => {
-    const cleanWord = word.toLowerCase().replace(/[^a-z]/g, '');
-    const span = document.createElement('span');
-    span.textContent = word + ' ';
-    
-    if (cleanWord) {
-        totalValidWords++;
-        if (!dictionary.has(cleanWord)) {
-            span.className = 'incorrect';
-            unknownWords.add(cleanWord);
-        } else {
-            recognizedWordCount++;
+    // Process words for the main text display and counting
+    words.forEach(word => {
+        const cleanWord = word.toLowerCase().replace(/[^a-z']/g, '');
+        const span = document.createElement('span');
+        span.textContent = word + ' ';
+        
+        if (cleanWord) {
+            totalValidWords++;
+            if (checkWord(word)) {
+                recognizedWordCount++;
+            } else {
+                span.className = 'incorrect';
+                unknownWords.add(cleanWord);
+            }
         }
-    }
-    
-    textDiv.appendChild(span);
-});
+        
+        textDiv.appendChild(span);
+    });
 
     // Process sentences
     const processedSentences = sentences.map(sentence => {
@@ -2073,8 +2101,8 @@ words.forEach(word => {
         const processedWords = sentence.split(/(\s+|[.,!?]+)/).map(part => {
             // If it's not just whitespace or punctuation
             if (part.trim() && !part.match(/^[.,!?\s]+$/)) {
-                const cleanWord = part.toLowerCase().replace(/[^a-z]/g, '');
-                if (cleanWord && !dictionary.has(cleanWord)) {
+                const cleanWord = part.toLowerCase().replace(/[^a-z']/g, '');
+                if (cleanWord && !checkWord(part)) {
                     containsUnrecognizedWord = true;
                     return `<span class="incorrect">${part}</span>`;
                 }
@@ -2146,4 +2174,4 @@ words.forEach(word => {
     resultDiv.appendChild(statsDiv);
     resultDiv.appendChild(sentencesDiv);
     resultDiv.appendChild(unknownWordsDiv);
-}
+};
