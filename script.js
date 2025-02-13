@@ -1,5 +1,10 @@
 // This is a simple example dictionary.
 const dictionary = new Set([
+    "cold",
+    "brr",
+    "mr",
+    "mrs",
+    "ms",
     "a",
 "a.m.",
 "ac",
